@@ -47,32 +47,33 @@ public class DrawingArea extends JPanel{
 	}
 	
 	public void generateVornoi(boolean euclidian){
-		int width = this.getWidth();
-		int height = this.getHeight();
-		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-		
-		for(int i = 0; i < height; i++){
-			for(int j = 0; j < width; j++){
-				Point closest = null;
-				double dist = 999999;
-				//int dist = 999999;
-				for(Point p : centers){
-					double tempDist = 0;
-					if(euclidian){
-						tempDist = euclidianDist(p, j, i);
-					}else{
-						tempDist = manhattanDist(p, j, i);
+		if(!centers.isEmpty()){
+			int width = this.getWidth();
+			int height = this.getHeight();
+			img = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			
+			for(int i = 0; i < height; i++){
+				for(int j = 0; j < width; j++){
+					Point closest = null;
+					double dist = 999999;
+					for(Point p : centers){
+						double tempDist = 0;
+						if(euclidian){
+							tempDist = euclidianDist(p, j, i);
+						}else{
+							tempDist = manhattanDist(p, j, i);
+						}
+						if(tempDist < dist){
+							closest = p;
+							dist = tempDist;
+						}
 					}
-					if(tempDist < dist){
-						closest = p;
-						dist = tempDist;
-					}
+					img.setRGB(j, i, closest.RGB);
 				}
-				img.setRGB(j, i, closest.RGB);
 			}
+			
+			repaint();
 		}
-		
-		repaint();
 	}
 	
 	public double manhattanDist(Point p, int x, int y){
